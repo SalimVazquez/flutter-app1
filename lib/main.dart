@@ -7,7 +7,8 @@ void main() {
     routes: {
       '/': (context) => Welcome(),
       '/login': (context) => Login(),
-      '/index': (context) => Index()
+      '/index': (context) => Index(),
+      Profile.routeName: (context) => Profile()
     },
   ));
 }
@@ -64,7 +65,7 @@ class Login extends StatelessWidget {
       body: SingleChildScrollView(
           child: Column(children: <Widget>[
         Padding(
-          padding: EdgeInsets.fromLTRB(35, 70, 35, 0),
+          padding: EdgeInsets.fromLTRB(35, 205, 35, 0),
           child: TextField(
             obscureText: false,
             decoration: InputDecoration(
@@ -76,7 +77,7 @@ class Login extends StatelessWidget {
           ),
         ),
         Padding(
-            padding: EdgeInsets.fromLTRB(35, 40, 35, 0),
+            padding: EdgeInsets.fromLTRB(35, 30, 35, 0),
             child: TextField(
               obscureText: true,
               decoration: InputDecoration(
@@ -99,7 +100,7 @@ class Login extends StatelessWidget {
               label: Text("Iniciar sesión"),
             )),
         Padding(
-            padding: EdgeInsets.fromLTRB(0, 280, 150, 0),
+            padding: EdgeInsets.fromLTRB(0, 150, 200, 0),
             child: ElevatedButton.icon(
               style: ButtonStyle(
                   backgroundColor:
@@ -146,8 +147,10 @@ class Index extends StatelessWidget {
                   backgroundColor: MaterialStateProperty.all<Color>(
                       Colors.red[colorCodes[index]])),
               onPressed: () {
-                return Scaffold.of(context).showSnackBar(
-                    SnackBar(content: Text('Clicked ${entries[index]}')));
+                Navigator.pushNamed(context, Profile.routeName,
+                    arguments: ScreenArguments(entries[index].toString()));
+                // return Scaffold.of(context).showSnackBar(
+                //     SnackBar(content: Text('Clicked ${entries[index]}')));
               },
               icon: Icon(Icons.people, size: 20),
               label: Text(
@@ -160,4 +163,32 @@ class Index extends StatelessWidget {
               const Divider(),
         ));
   }
+}
+
+class Profile extends StatelessWidget {
+  static const routeName = '/profile';
+
+  @override
+  Widget build(BuildContext context) {
+    // Extract the arguments from the current ModalRoute settings and cast
+    // them as ScreenArguments.
+    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('AppRoot'),
+        centerTitle: true,
+        backgroundColor: Color.fromRGBO(240, 94, 100, 1),
+      ),
+      body: Center(
+        child: Text('User: ' + args.username),
+      ),
+    );
+  }
+}
+
+class ScreenArguments {
+  final String username;
+
+  ScreenArguments(this.username);
 }
