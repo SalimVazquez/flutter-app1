@@ -4,7 +4,11 @@ void main() {
   runApp(MaterialApp(
     title: 'AppRoot',
     initialRoute: '/',
-    routes: {'/': (context) => Welcome(), '/login': (context) => Login()},
+    routes: {
+      '/': (context) => Welcome(),
+      '/login': (context) => Login(),
+      '/index': (context) => Index()
+    },
   ));
 }
 
@@ -57,10 +61,10 @@ class Login extends StatelessWidget {
         backgroundColor: Color.fromRGBO(240, 94, 100, 1),
         automaticallyImplyLeading: false,
       ),
-      body: Center(
+      body: SingleChildScrollView(
           child: Column(children: <Widget>[
         Padding(
-          padding: EdgeInsets.fromLTRB(35, 60, 35, 0),
+          padding: EdgeInsets.fromLTRB(35, 70, 35, 0),
           child: TextField(
             obscureText: false,
             decoration: InputDecoration(
@@ -72,7 +76,7 @@ class Login extends StatelessWidget {
           ),
         ),
         Padding(
-            padding: EdgeInsets.fromLTRB(35, 70, 35, 0),
+            padding: EdgeInsets.fromLTRB(35, 40, 35, 0),
             child: TextField(
               obscureText: true,
               decoration: InputDecoration(
@@ -83,17 +87,19 @@ class Login extends StatelessWidget {
                       borderRadius: BorderRadius.circular(32.0))),
             )),
         Padding(
-            padding: EdgeInsets.fromLTRB(50, 90, 50, 0),
+            padding: EdgeInsets.fromLTRB(50, 50, 50, 0),
             child: ElevatedButton.icon(
               style: ButtonStyle(
                   backgroundColor:
                       MaterialStateProperty.all<Color>(Colors.red)),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/index');
+              },
               icon: Icon(Icons.verified_user, size: 18),
               label: Text("Iniciar sesión"),
             )),
         Padding(
-            padding: EdgeInsets.fromLTRB(0, 120, 150, 0),
+            padding: EdgeInsets.fromLTRB(0, 280, 150, 0),
             child: ElevatedButton.icon(
               style: ButtonStyle(
                   backgroundColor:
@@ -106,5 +112,52 @@ class Login extends StatelessWidget {
             ))
       ])),
     );
+  }
+}
+
+class Index extends StatelessWidget {
+  final entries = List<String>.generate(10, (index) => "# $index");
+  final List<int> colorCodes = <int>[
+    900,
+    900,
+    800,
+    800,
+    700,
+    700,
+    600,
+    600,
+    400,
+    400
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('AppRoot'),
+          centerTitle: true,
+          backgroundColor: Color.fromRGBO(240, 94, 100, 1),
+        ),
+        body: ListView.separated(
+          padding: const EdgeInsets.all(8),
+          itemCount: entries.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ElevatedButton.icon(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Colors.red[colorCodes[index]])),
+              onPressed: () {
+                return Scaffold.of(context).showSnackBar(
+                    SnackBar(content: Text('Clicked ${entries[index]}')));
+              },
+              icon: Icon(Icons.people, size: 20),
+              label: Text(
+                'Item ${entries[index]}',
+                style: TextStyle(fontSize: 20),
+              ),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) =>
+              const Divider(),
+        ));
   }
 }
